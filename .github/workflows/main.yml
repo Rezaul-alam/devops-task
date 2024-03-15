@@ -1,0 +1,22 @@
+name: CI/CD Pipeline
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Build and Push Docker Image
+      env:
+        DOCKER_USERNAME: ${{ secrets.rezaulalam1667 }}
+        DOCKER_PASSWORD: ${{ secrets.dckr_pat_3AKcXRBHUrznNGHWOMDftJNAPIs }}
+      run: |
+        docker build -t rezaulalam1667/rest-api-app:${{ github.event.release.tag_name }} .
+        echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+        docker push rezaulalam1667/rest-api-app:${{ github.event.release.tag_name }}
